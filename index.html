@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tebak Sandi Morse</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    select, input, button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #codeDisplay {
+      margin: 20px 0;
+      font-size: 20px;
+      font-weight: bold;
+      word-wrap: break-word;
+    }
+
+    #resultDisplay {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tebak Sandi Morse 🔐</h1>
+
+    <label for="mode">Pilih Mode:</label>
+    <select id="mode">
+      <option value="huruf">Huruf</option>
+      <option value="kata">Kata</option>
+      <option value="kalimat">Kalimat</option>
+    </select>
+
+    <br/>
+    <button onclick="generateMorse()">Buat Soal</button>
+
+    <div id="codeDisplay"></div>
+
+    <input type="text" id="userAnswer" placeholder="Masukkan tebakan kamu" />
+    <button onclick="checkAnswer()">Cek Jawaban</button>
+
+    <div id="resultDisplay"></div>
+  </div>
+<!-- 🎵 Sound effects -->
+  <audio id="soundCorrect" src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c991d7784.mp3" preload="auto"></audio>
+  <audio id="soundWrong" src="https://cdn.pixabay.com/audio/2022/03/15/audio_e3c8f9b6f0.mp3" preload="auto"></audio>
+      <script>
+    const morseMap = {
+      a: ".-",    b: "-...",  c: "-.-.", d: "-..",
+      e: ".",     f: "..-.",  g: "--.",  h: "....",
+      i: "..",    j: ".---",  k: "-.-",  l: ".-..",
+      m: "--",    n: "-.",    o: "---",  p: ".--.",
+      q: "--.-",  r: ".-.",   s: "...",  t: "-",
+      u: "..-",   v: "...-",  w: ".--",  x: "-..-",
+      y: "-.--",  z: "--..",
+      0: "-----", 1: ".----", 2: "..---", 3: "...--",
+      4: "....-", 5: ".....", 6: "-....", 7: "--...",
+      8: "---..", 9: "----."
+    };
+
+    const kataList = ["kode", "chat", "halo", "sandi", "robot", "tebak", "belajar"];
+    const kalimatList = [
+      "aku suka belajar",
+      "ini adalah sandi morse",
+      "tebak huruf dengan kode",
+      "selamat datang teman",
+      "ayo bermain morse"
+    ];
+
+    let currentAnswer = "";
+
+    function getRandomLetter() {
+      const letters = "abcdefghijklmnopqrstuvwxyz";
+      return letters[Math.floor(Math.random() * letters.length)];
+    }
+
+    function generateMorse() {
+      const mode = document.getElementById("mode").value;
+
+      if (mode === "huruf") {
+        currentAnswer = getRandomLetter();
+      } else if (mode === "kata") {
+        currentAnswer = kataList[Math.floor(Math.random() * kataList.length)];
+      } else if (mode === "kalimat") {
+        currentAnswer = kalimatList[Math.floor(Math.random() * kalimatList.length)];
+      }
+
+      const morseCode = textToMorse(currentAnswer);
+      document.getElementById("codeDisplay").innerText = morseCode;
+      document.getElementById("resultDisplay").innerText = "";
+      document.getElementById("userAnswer").value = "";
+    }
+
+    function textToMorse(text) {
+      return text.toLowerCase().split('').map(char => {
+        if (char === ' ') return '/'; // separator for words
+        return morseMap[char] || char;
+      }).join(' ');
+    }
+
+    function checkAnswer() {
+      const guess = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const correct = currentAnswer.toLowerCase();
+
+      const result = (guess === correct)
+        ? "✅ Jawaban benar!"
+        : `❌ Salah. Jawaban yang benar: "${currentAnswer}"`;
+
+      document.getElementById("resultDisplay").innerText = result;
+    }
+  </script>
+</body>
+</html>
